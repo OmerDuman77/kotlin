@@ -14,18 +14,17 @@ public class WebWordGame {
     private static final Map<String, GameSession> activeSessions = new ConcurrentHashMap<>();
 
     // Words and their hints
-    private static final Map<String, String> WORDS_WITH_HINTS = Map.of(
-            "cat", "A small domesticated carnivorous mammal",
-            "book", "A written or printed work consisting of pages",
-            "house", "A building for human habitation",
-            "table", "A piece of furniture with a flat top",
-            "music", "Vocal or instrumental sounds combined",
-            "garden", "A plot of ground where plants are cultivated",
-            "computer", "An electronic device for storing and processing data",
-            "mountain", "A large natural elevation of the earth's surface",
-            "telephone", "A system for transmitting voices over a distance",
-            "chocolate", "A food made from roasted and ground cacao seeds"
-    );
+    private static final Map<String, String> WORDS_WITH_HINTS = new HashMap<>() {{
+        // Words with increasing lengths from 3 to 10 letters
+        put("cat", "A small domesticated carnivorous mammal");
+        put("book", "A written or printed work consisting of pages");
+        put("table", "A piece of furniture with a flat top");
+        put("music", "Vocal or instrumental sounds combined");
+        put("garden", "A plot of ground where plants are cultivated");
+        put("station", "A place where trains stop");
+        put("computer", "An electronic device for storing and processing data");
+        put("chocolate", "A food made from roasted and ground cacao seeds");
+    }};
 
     static class GameSession {
         String id;
@@ -85,7 +84,7 @@ public class WebWordGame {
 
         void revealRandomLetter() {
             String currentWord = getCurrentWord();
-            if (currentWord.isEmpty() || score < 50) return;
+            if (currentWord.isEmpty() || score < 100) return;
 
             List<Integer> unrevealed = new ArrayList<>();
             for (int i = 0; i < currentWord.length(); i++) {
@@ -97,7 +96,7 @@ public class WebWordGame {
             if (!unrevealed.isEmpty()) {
                 int randomIndex = unrevealed.get(new Random().nextInt(unrevealed.size()));
                 revealedLetters.add(randomIndex);
-                score -= 50; // Cost of hint
+                score -= 100; // Cost of hint (updated to 100 points)
             }
         }
 
@@ -273,7 +272,7 @@ public class WebWordGame {
                 html.append("<input type='submit' value='Submit'>");
                 html.append("</form>");
                 html.append("<div style='margin-top: 10px;'>");
-                html.append("<a href='/hint'><button>Get Hint (-50 points)</button></a>");
+                html.append("<a href='/hint'><button>Get Hint (-100 points)</button></a>");
                 html.append("</div>");
             } else {
                 html.append("<a href='/newgame'><button>Play Again</button></a>");
