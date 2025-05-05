@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Word Game</string>
+    <string name="home_screen_title">Word Game Challenge</string>
+    <string name="home_screen_description">Answer questions with words of increasing length within a time limit!</string>
+    <string name="start_game">Start Game</string>
+    <string name="view_results">View Results</string>
+    <string name="hint_button">Hint</string>
+    <string name="submit_button">Submit</string>
+    <string name="time_remaining">Time: %1$d seconds</string>
+    <string name="correct_answer">Correct! +%1$d points</string>
+    <string name="wrong_answer">Incorrect. Try again.</string>
+    <string name="game_over">Game Over</string>
+    <string name="final_score">Final Score: %1$d</string>
+    <string name="play_again">Play Again</string>
+    <string name="back_to_home">Back to Home</string>
+</resources>

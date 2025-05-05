@@ -1,0 +1,28 @@
+modules = ["kotlin"]
+
+[nix]
+channel = "stable-24_05"
+packages = ["wget", "jdk", "openjdk"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "WordGameDemo"
+
+[[workflows.workflow]]
+name = "WordGameDemo"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./run.sh"
+
+[deployment]
+run = ["sh", "-c", "./gradlew :app:assembleDebug && ./gradlew :app:installDebug && ./gradlew :app:run"]
