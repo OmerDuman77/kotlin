@@ -1,12 +1,9 @@
 #!/bin/bash
 
-# Create build directory
-mkdir -p build
+# Compile Java web server version
+echo "Compiling Java web game..."
+javac WebWordGame.java
 
-# Compile Kotlin files
-echo "Compiling Kotlin files..."
-kotlinc app/src/main/java/com/wordgame/demo/WordGameDemo.kt -include-runtime -d build/WordGameDemo.jar
-
-# Run the game
-echo "Starting Word Game Demo..."
-java -jar build/WordGameDemo.jar
+# Run the web server
+echo "Starting Web Word Game server on port 5000..."
+java WebWordGame

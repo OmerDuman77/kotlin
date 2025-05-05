@@ -23,6 +23,11 @@ author = "agent"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "./run.sh"
+waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "./gradlew :app:assembleDebug && ./gradlew :app:installDebug && ./gradlew :app:run"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
