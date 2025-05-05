@@ -257,9 +257,9 @@ public class WebWordGame {
             html.append("<html><head><title>Word Game</title>");
             html.append("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             
-            // Oyun devam ediyorsa her saniye sayfayı yenile
+            // Oyun devam ediyorsa her 5 saniyede bir sayfayı yenile
             if (!session.isGameOver()) {
-                html.append("<meta http-equiv='refresh' content='1'>");
+                html.append("<meta http-equiv='refresh' content='5'>");
             }
             
             html.append("<style>");
