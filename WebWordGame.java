@@ -34,12 +34,20 @@ public class WebWordGame {
         int score = 0;
         Set<Integer> revealedLetters = new HashSet<>();
         long lastActionTime = System.currentTimeMillis();
+        long gameStartTime = System.currentTimeMillis();
 
         GameSession(String id) {
             this.id = id;
             this.words = new ArrayList<>(WORDS_WITH_HINTS.keySet());
             // Sort by length
             Collections.sort(this.words, Comparator.comparing(String::length));
+            this.gameStartTime = System.currentTimeMillis();
+        }
+        
+        void updateTimeRemaining() {
+            // Oyun süresini hesapla (saniye olarak)
+            long elapsedSeconds = (System.currentTimeMillis() - gameStartTime) / 1000;
+            this.timeRemaining = Math.max(0, 120 - (int)elapsedSeconds);
         }
 
         boolean isExpired() {
@@ -97,21 +105,21 @@ public class WebWordGame {
                 int randomIndex = unrevealed.get(new Random().nextInt(unrevealed.size()));
                 revealedLetters.add(randomIndex);
                 score -= 100; // Cost of hint (updated to 100 points)
+                // İpucu istediğimizde zaman cezası kaldırıldı
             }
         }
 
         void checkAnswer(String answer) {
             String currentWord = getCurrentWord();
-            timeRemaining -= 2; // Time passes for each guess
+            // Zaman geçişini kaldırdık
 
             if (currentWord.equalsIgnoreCase(answer)) {
                 score += currentWord.length() * 100;
                 currentWordIndex++;
                 revealedLetters.clear();
-                timeRemaining -= 5; // Each word costs time
-            } else {
-                timeRemaining -= 3; // Wrong guess penalty
-            }
+                // Kelime başarıyla çözüldüğünde bile zaman düşüşünü kaldırdık
+            } 
+            // Yanlış tahminlerde de zaman cezasını kaldırdık
         }
 
         String getGameState() {
@@ -156,6 +164,7 @@ public class WebWordGame {
             
             GameSession session = activeSessions.get(sessionId);
             session.updateLastActionTime();
+            session.updateTimeRemaining(); // Her istekte zamanı güncelle
             
             // Clean up expired sessions
             cleanupExpiredSessions();
@@ -247,6 +256,12 @@ public class WebWordGame {
             html.append("<!DOCTYPE html>");
             html.append("<html><head><title>Word Game</title>");
             html.append("<meta name='viewport' content='width=device-width, initial-scale=1'>");
+            
+            // Oyun devam ediyorsa her saniye sayfayı yenile
+            if (!session.isGameOver()) {
+                html.append("<meta http-equiv='refresh' content='1'>");
+            }
+            
             html.append("<style>");
             html.append("body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }");
             html.append("h1 { color: #2c3e50; }");
