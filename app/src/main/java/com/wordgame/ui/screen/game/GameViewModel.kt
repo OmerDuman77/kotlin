@@ -1,5 +1,6 @@
 package com.wordgame.ui.screen.game
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wordgame.data.db.entity.GameResult
@@ -21,8 +22,9 @@ data class GameState(
     val words: List<Word> = emptyList(),
     val currentQuestionIndex: Int = 0,
     val correctAnswers: Int = 0,
-    val totalQuestions: Int = 8, // 8 questions (from 3-letter to 10-letter words)
-    val hintsUsed: Int = 0
+    val totalQuestions: Int = 8,
+    val hintsUsed: Int = 0,
+    var answerGiven: Boolean = false
 )
 
 @HiltViewModel
@@ -40,7 +42,7 @@ class GameViewModel @Inject constructor(
     private val _revealedLetters = MutableStateFlow<Set<Int>>(emptySet())
     val revealedLetters: StateFlow<Set<Int>> = _revealedLetters.asStateFlow()
 
-    private val _timeRemaining = MutableStateFlow(120) // 120 seconds
+    private val _timeRemaining = MutableStateFlow(240)
     val timeRemaining: StateFlow<Int> = _timeRemaining.asStateFlow()
 
     private val _score = MutableStateFlow(0)
@@ -57,16 +59,20 @@ class GameViewModel @Inject constructor(
 
     private fun startGame() {
         viewModelScope.launch {
+            Log.d("GameViewModel", "startGame() called")
             val gameWords = wordRepository.getWordsForGame()
-            
+            Log.d("GameViewModel", "startGame() got ${gameWords.size} words")
             if (gameWords.isNotEmpty()) {
                 _gameState.value = GameState(
                     isGameActive = true,
                     words = gameWords,
                     totalQuestions = gameWords.size
                 )
+                Log.d("GameViewModel", "GameState updated with ${gameWords.size} words")
                 updateCurrentQuestion()
                 startTimer()
+            } else {
+                Log.e("GameViewModel", "Failed to load any game words")
             }
         }
     }
@@ -77,8 +83,7 @@ class GameViewModel @Inject constructor(
             while (_timeRemaining.value > 0 && _gameState.value.isGameActive) {
                 delay(1000)
                 _timeRemaining.value -= 1
-                
-                // End game if time runs out
+
                 if (_timeRemaining.value <= 0) {
                     endGame()
                 }
@@ -88,10 +93,13 @@ class GameViewModel @Inject constructor(
 
     private fun updateCurrentQuestion() {
         val state = _gameState.value
+        Log.d("GameViewModel", "updateCurrentQuestion() called with index ${state.currentQuestionIndex}, words size ${state.words.size}")
         if (state.currentQuestionIndex < state.words.size) {
             _currentQuestion.value = state.words[state.currentQuestionIndex]
+            Log.d("GameViewModel", "Current question set to ${_currentQuestion.value?.word}")
             _revealedLetters.value = emptySet()
         } else {
+            Log.d("GameViewModel", "End of questions reached")
             endGame()
         }
     }
@@ -99,18 +107,15 @@ class GameViewModel @Inject constructor(
     fun revealRandomLetter() {
         val currentWord = _currentQuestion.value?.word ?: return
         val revealedSet = _revealedLetters.value.toMutableSet()
-        
+
         if (revealedSet.size < currentWord.length) {
-            // Find indices that haven't been revealed yet
             val unrevealed = currentWord.indices.filter { it !in revealedSet }
-            
+
             if (unrevealed.isNotEmpty()) {
-                // Reveal a random unrevealed letter
                 val randomIndex = unrevealed[Random.nextInt(unrevealed.size)]
                 revealedSet.add(randomIndex)
                 _revealedLetters.value = revealedSet
-                
-                // Update game state to track hints used
+
                 _gameState.value = _gameState.value.copy(
                     hintsUsed = _gameState.value.hintsUsed + 1
                 )
@@ -118,28 +123,33 @@ class GameViewModel @Inject constructor(
         }
     }
 
+
     fun checkAnswer(answer: String): Boolean {
         val currentWord = _currentQuestion.value?.word ?: return false
         val isCorrect = answer.trim().equals(currentWord, ignoreCase = true)
-        
+
         if (isCorrect) {
-            // Calculate points for correct answer
-            val letterPoints = currentWord.length * 100
-            _score.value += letterPoints
-            
-            // Update correct answers count
-            _gameState.value = _gameState.value.copy(
-                correctAnswers = _gameState.value.correctAnswers + 1
-            )
+            if (!_gameState.value.answerGiven) {
+                val totalPoints = currentWord.length * 100
+                val revealedPoints = _revealedLetters.value.size * 100
+                val earnedPoints = totalPoints - revealedPoints
+                _score.value += earnedPoints
+
+                _gameState.value = _gameState.value.copy(
+                    correctAnswers = _gameState.value.correctAnswers + 1,
+                    answerGiven = true
+                )
+            }
         }
-        
+
         return isCorrect
     }
 
     fun nextQuestion() {
         val nextIndex = _gameState.value.currentQuestionIndex + 1
         _gameState.value = _gameState.value.copy(
-            currentQuestionIndex = nextIndex
+            currentQuestionIndex = nextIndex,
+                    answerGiven = false
         )
         updateCurrentQuestion()
     }
@@ -149,8 +159,7 @@ class GameViewModel @Inject constructor(
         
         _gameState.value = _gameState.value.copy(isGameActive = false)
         timerJob?.cancel()
-        
-        // Calculate time bonus: 50 points per second remaining
+
         val timeBonus = _timeRemaining.value * 50
         _score.value += timeBonus
         

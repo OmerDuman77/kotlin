@@ -90,13 +90,11 @@ fun GameScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Top info section
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Score
                 Card(
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                     shape = RoundedCornerShape(8.dp),
@@ -118,8 +116,7 @@ fun GameScreen(
                 }
                 
                 Spacer(modifier = Modifier.width(16.dp))
-                
-                // Timer
+
                 Card(
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                     shape = RoundedCornerShape(8.dp),
@@ -134,8 +131,7 @@ fun GameScreen(
             }
             
             Spacer(modifier = Modifier.height(24.dp))
-            
-            // Question and progress
+
             currentQuestion?.let { question ->
                 Text(
                     text = "Question ${gameState.currentQuestionIndex + 1} of ${gameState.totalQuestions}",
@@ -145,8 +141,7 @@ fun GameScreen(
                 )
                 
                 Spacer(modifier = Modifier.height(8.dp))
-                
-                // Hint text
+
                 Card(
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     modifier = Modifier.fillMaxWidth()
@@ -160,8 +155,7 @@ fun GameScreen(
                 }
                 
                 Spacer(modifier = Modifier.height(24.dp))
-                
-                // Word display with boxes
+
                 WordDisplayView(
                     word = question.word,
                     revealedIndices = revealedLetters,
@@ -169,8 +163,7 @@ fun GameScreen(
                 )
                 
                 Spacer(modifier = Modifier.height(24.dp))
-                
-                // User input field
+
                 OutlinedTextField(
                     value = userAnswer,
                     onValueChange = { userAnswer = it },
@@ -191,21 +184,18 @@ fun GameScreen(
                 )
                 
                 Spacer(modifier = Modifier.height(16.dp))
-                
-                // Buttons row
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    // Hint button
                     HintButton(
                         onClick = { viewModel.revealRandomLetter() },
                         enabled = revealedLetters.size < question.word.length
                     )
                     
                     Spacer(modifier = Modifier.width(16.dp))
-                    
-                    // Submit button
+
                     Button(
                         onClick = {
                             if (userAnswer.isNotBlank()) {
@@ -218,8 +208,7 @@ fun GameScreen(
                         Text("Submit")
                     }
                 }
-                
-                // Feedback display
+
                 if (showFeedback) {
                     Spacer(modifier = Modifier.height(16.dp))
                     
@@ -236,7 +225,7 @@ fun GameScreen(
                     ) {
                         Text(
                             text = if (isCorrect) "Correct! Well done!" 
-                                   else "Incorrect. The answer was: ${question.word}",
+                                   else "Incorrect. Try Again",
                             style = MaterialTheme.typography.bodyLarge,
                             color = if (isCorrect) CorrectGreen else IncorrectRed
                         )
@@ -252,7 +241,6 @@ fun GameScreen(
                     }
                 }
             } ?: run {
-                // Loading state
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -262,8 +250,7 @@ fun GameScreen(
             }
         }
     }
-    
-    // Time's up dialog
+
     if (timeRemaining <= 0 && !isGameOver) {
         AlertDialog(
             onDismissRequest = { },

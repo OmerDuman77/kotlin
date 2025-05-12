@@ -4,10 +4,6 @@ import java.util.Scanner
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
-/**
- * A demo implementation of the Word Game that runs in a console environment.
- * This demonstrates the core game mechanics without requiring Android SDK.
- */
 class WordGameDemo {
     private val wordsWithHints = mapOf(
         "cat" to "A small domesticated carnivorous mammal",
@@ -24,7 +20,7 @@ class WordGameDemo {
     
     private val words = wordsWithHints.keys.toList()
     private var gameScore = 0
-    private var timeRemaining = 120 // 120 seconds
+    private var timeRemaining = 120
     private var currentWordIndex = 0
     private var revealedLetters = mutableSetOf<Int>()
     
@@ -41,12 +37,10 @@ class WordGameDemo {
         while (currentWordIndex < words.size && timeRemaining > 0) {
             val currentWord = words[currentWordIndex]
             val hint = wordsWithHints[currentWord] ?: ""
-            
-            // Display current challenge
+
             println("\nWord ${currentWordIndex + 1}/${words.size} (${currentWord.length} letters)")
             println("Hint: $hint")
-            
-            // Display current word with revealed letters
+
             displayWordWithHints(currentWord)
             
             println("Time remaining: $timeRemaining seconds")
@@ -67,15 +61,14 @@ class WordGameDemo {
                     gameScore += currentWord.length * 100
                     currentWordIndex++
                     revealedLetters.clear()
-                    timeRemaining -= 5 // Each word costs 5 seconds
+                    timeRemaining -= 5 //
                 }
                 else -> {
                     println("Incorrect. Try again or type 'hint' for help.")
-                    timeRemaining -= 3 // Each wrong attempt costs 3 seconds
+                    timeRemaining -= 3
                 }
             }
-            
-            // Simulate time passing
+
             timeRemaining -= 2
             
             if (timeRemaining <= 0) {
@@ -83,8 +76,7 @@ class WordGameDemo {
                 break
             }
         }
-        
-        // Game over, calculate final score
+
         val timeBonus = timeRemaining * 50
         gameScore += timeBonus
         
@@ -102,8 +94,7 @@ class WordGameDemo {
     
     private fun displayWordWithHints(word: String) {
         val display = CharArray(word.length) { '_' }
-        
-        // Fill in revealed letters
+
         for (index in revealedLetters) {
             if (index < word.length) {
                 display[index] = word[index]
@@ -123,14 +114,13 @@ class WordGameDemo {
             println("Not enough points for a hint! You need 50 points.")
             return
         }
-        
-        // Find unrevealed letters
+
         val unrevealed = word.indices.filter { it !in revealedLetters }
         
         if (unrevealed.isNotEmpty()) {
             val randomIndex = unrevealed.random()
             revealedLetters.add(randomIndex)
-            gameScore -= 50 // Cost of hint
+            gameScore -= 50
             
             println("Letter revealed! -50 points")
         }

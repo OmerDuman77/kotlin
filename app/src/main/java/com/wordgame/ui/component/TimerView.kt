@@ -33,8 +33,8 @@ fun TimerView(
     val timerColor by animateColorAsState(
         targetValue = when {
             timeRemaining <= 10 -> TimerAlertRed
-            timeRemaining <= 30 -> Color(0xFFFFA000) // Orange
-            else -> Color(0xFF4CAF50) // Green
+            timeRemaining <= 30 -> Color(0xFFFFA000)
+            else -> Color(0xFF4CAF50)
         },
         label = "timer_color"
     )

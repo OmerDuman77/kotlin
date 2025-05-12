@@ -1,26 +1,25 @@
 buildscript {
     ext {
-        kotlin_version = '1.9.10'
-        compose_version = '1.5.4'
-        compose_compiler_version = '1.5.3'
-        room_version = '2.6.1'
-        hilt_version = '2.48'
+        kotlin_version = '2.1.20'
+        compose_version = '1.6.7' // En son kararlı sürüm veya bir üst kararlı sürüm deneyin
+        compose_compiler_version = '1.6.7' // Compose sürümünüzle aynı olmalı
+        room_version = '2.7.1'
+        hilt_version = '2.56.2'
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.9.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath 'org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.1.20'
     }
 }
 
 allprojects {
     repositories {
-        google()
-        mavenCentral()
     }
 }
 

@@ -32,7 +32,6 @@ fun WordDisplayView(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Calculate width based on number of letters
         val letterSize = when {
             word.length <= 6 -> 48.dp
             word.length <= 8 -> 40.dp

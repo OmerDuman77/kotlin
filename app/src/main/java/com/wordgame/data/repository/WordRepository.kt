@@ -1,5 +1,7 @@
 package com.wordgame.data.repository
 
+import android.util.Log
+import com.wordgame.data.WordData
 import com.wordgame.data.db.dao.WordDao
 import com.wordgame.data.db.entity.Word
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +11,13 @@ class WordRepository @Inject constructor(
     private val wordDao: WordDao
 ) {
     fun getAllWords(): Flow<List<Word>> = wordDao.getAllWords()
+
+    suspend fun addStaticWords() {
+        if (wordDao.getAnyWord() == null) {
+            wordDao.insertAll(WordData.wordList)
+        }
+
+    }
 
     fun getWordsByLength(length: Int): Flow<List<Word>> = wordDao.getWordsByLength(length)
 
@@ -20,14 +29,17 @@ class WordRepository @Inject constructor(
 
     suspend fun getRandomWordByLength(length: Int): Word? = wordDao.getRandomWordByLength(length)
 
-    // Get a word for each required length (3-10)
     suspend fun getWordsForGame(): List<Word> {
         val gameWords = mutableListOf<Word>()
         for (length in 3..10) {
-            wordDao.getRandomWordByLength(length)?.let {
+            Log.d("WordRepo", "Getting random word for length $length")
+            val word = wordDao.getRandomWordByLength(length)
+            Log.d("WordRepo", "Got word '$word' for length $length")
+            word?.let {
                 gameWords.add(it)
             }
         }
+        Log.d("WordRepo", "getWordsForGame() returning list of size ${gameWords.size}")
         return gameWords
     }
 }

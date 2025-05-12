@@ -26,4 +26,7 @@ interface WordDao {
 
     @Query("SELECT * FROM words WHERE length = :length ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandomWordByLength(length: Int): Word?
+
+    @Query("SELECT * FROM words LIMIT 1")
+    suspend fun getAnyWord(): Word?
 }

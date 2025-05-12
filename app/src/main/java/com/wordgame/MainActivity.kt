@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.wordgame.data.db.WordGameDatabase
 import com.wordgame.ui.navigation.NavGraph
 import com.wordgame.ui.theme.WordGameTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,9 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WordGameDatabase.getInstance(applicationContext)
         setContent {
             WordGameTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -27,4 +28,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }

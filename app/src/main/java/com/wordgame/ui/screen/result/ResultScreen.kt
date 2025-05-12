@@ -54,8 +54,7 @@ fun ResultScreen(
             )
             
             Spacer(modifier = Modifier.height(32.dp))
-            
-            // Score card
+
             Card(
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 shape = RoundedCornerShape(16.dp),
@@ -91,8 +90,7 @@ fun ResultScreen(
             }
             
             Spacer(modifier = Modifier.height(24.dp))
-            
-            // Stats card
+
             Card(
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 shape = RoundedCornerShape(8.dp),
@@ -139,8 +137,7 @@ fun ResultScreen(
             }
             
             Spacer(modifier = Modifier.height(32.dp))
-            
-            // Action buttons
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly

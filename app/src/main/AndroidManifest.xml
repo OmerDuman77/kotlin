@@ -5,16 +5,14 @@
     <application
         android:name=".WordGameApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="Word Game"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WordGame">
+        android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="Word Game"
-            android:theme="@style/Theme.WordGame">
+            android:theme="@android:style/Theme.Material.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

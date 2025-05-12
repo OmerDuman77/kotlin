@@ -1,6 +1,7 @@
 package com.wordgame.data.db
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -24,6 +25,7 @@ abstract class WordGameDatabase : RoomDatabase() {
         private var INSTANCE: WordGameDatabase? = null
 
         fun getInstance(context: Context): WordGameDatabase {
+            Log.d("aaa","$INSTANCE")
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -33,6 +35,7 @@ abstract class WordGameDatabase : RoomDatabase() {
                 .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
+                        Log.d("WordGameDatabase", "onCreate() çağrıldı")
                         INSTANCE?.let { database ->
                             CoroutineScope(Dispatchers.IO).launch {
                                 prePopulateDatabase(database.wordDao())
